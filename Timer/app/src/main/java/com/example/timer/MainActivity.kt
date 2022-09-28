@@ -16,6 +16,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ProgressBar
 import com.example.timer.databinding.ActivityMainBinding
+import com.example.timer.util.NotificationUtil
 import com.example.timer.util.PrefUtil
 import java.util.*
 import kotlin.concurrent.timer
@@ -94,8 +95,7 @@ class MainActivity : AppCompatActivity() {
         initTimer()
 
         removeAlarm(this)
-
-        //TODO: Remove backround timer, hide notification
+        NotificationUtil.hideTimerNotification(this)
     }
 
     override fun onPause() {
@@ -104,7 +104,9 @@ class MainActivity : AppCompatActivity() {
         if (timerState == MainActivity.TimerState.Running) {
             timer.cancel()
             val wakeUpTime = setAlarm(this, nowSeconds, secondsRemaining)
+            NotificationUtil.showTimerRunning(this,wakeUpTime)
         } else if (timerState == MainActivity.TimerState.Paused) {
+            NotificationUtil.showTimerPaused(this)
         }
         PrefUtil.setPreviousTimerLengthSeconds(timerLengthSeconds, this)
         PrefUtil.setSecondsRemaining(secondsRemaining, this)
